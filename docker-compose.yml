@@ -26,6 +26,8 @@ services:
             max-file: "10"
     relay:
         build: relay
+        volumes:
+          - ./data:/data
         env_file:
           - variables.env
         ports:
