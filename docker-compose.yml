@@ -1,0 +1,37 @@
+version: '2'
+services:
+    caddy-proxy:
+        image: abiosoft/caddy
+        #        restart: unless-stopped
+        ports:
+          - 0.0.0.0:8000:80
+        volumes:
+          - ./config/Caddyfile:/etc/Caddyfile
+          - ./config/caddycerts:/root/.caddy
+        logging:
+          driver: "json-file"
+          options:
+            max-size: "1m"
+            max-file: "10"
+    ethstats:
+        build: ethstats
+        environment:
+          - VIRTUAL_HOST=localhost
+        env_file:
+          - variables.env
+        logging:
+          driver: "json-file"
+          options:
+            max-size: "1m"
+            max-file: "10"
+    relay:
+        build: relay
+        env_file:
+          - variables.env
+        ports:
+          - 0.0.0.0:30303:30303
+        logging:
+          driver: "json-file"
+          options:
+            max-size: "1m"
+            max-file: "10"

@@ -1,0 +1,16 @@
+rinkeby-rpc.6120.eu, rinkeby-rpc.6l20.eu {
+  proxy /css http://ethstats:3000
+  proxy /js http://ethstats:3000
+  proxy /ethstats http://ethstats:3000 {
+      without /ethstats
+  }
+  proxy /primus http://ethstats:3000 {
+      websocket
+  }
+  proxy /ws node:8546 {
+      websocket
+  }
+  log stdout
+  errors stdout
+  tls noc@6120.eu
+}
