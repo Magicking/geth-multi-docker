@@ -20,7 +20,7 @@ fi
 modules="eth,web3,net"
 
 exec $gethcmd \
- --fast \
+ --syncmode fast \
  --rinkeby \
  --maxpeers 100 \
  ${statsopts} \
