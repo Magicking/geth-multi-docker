@@ -1,14 +1,30 @@
 #!/bin/sh
 
 DATA_DIR=/data
-ETHSTATS_NAME=ethstats
-gethcmd="/usr/local/bin/geth --datadir "${DATA_DIR}" --cache 512"
+gethcmd="/usr/local/bin/geth --datadir "${DATA_DIR}" --cache 4096"
+syncmode=fast
+
+case "${NET}" in
+	"rinkeby")
+		NET="--rinkeby"
+		;;
+	"ropsten")
+		NET="--testnet"
+		;;
+	*)
+		NET=""
+		;;
+esac
+
+if [ x"${ETHSTATS}" == x ]; then
+  ETHSTATS=ethstats
+fi
 
 if [ x"${CORS_DOMAIN}" == x ]; then
   CORS_DOMAIN=*
 fi
 
-ethstatsip=`dig +short "${ETHSTATS_NAME}" | head -n 1`
+ethstatsip=`dig +short "${ETHSTATS}" | head -n 1`
 
 if [ x"${ethstatsip}" != "x" ] && [ x"${WS_SECRET}" != "x" ]; then
   echo "Reporting stats to ${ethstatsip}"
@@ -20,10 +36,15 @@ fi
 modules="eth,web3,net"
 
 exec $gethcmd \
- --syncmode fast \
- --rinkeby \
+ --syncmode "$syncmode" \
+ ${NET} \
  --maxpeers 100 \
  ${statsopts} \
+ --rpc \
+ --rpcvhosts "*" \
+ --rpcaddr "0.0.0.0" \
+ --rpcapi "${modules}" \
+ --rpccorsdomain "${CORS_DOMAIN}" \
  --ws \
  --wsaddr "0.0.0.0" \
  --wsapi "${modules}" \
