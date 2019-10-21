@@ -1,15 +1,27 @@
 #!/bin/sh
 
+update() {
+	n=relay"$1"
+
+	docker-compose stop "$n" && \
+	docker-compose rm -f "$n" && \
+	docker-compose build "$n" && \
+	docker-compose create "$n" && \
+	docker-compose start "$n"
+}
+
+docker pull ethereum/client-go:alltools-latest
 case "$1" in
 	ropsten)
-	docker pull ethereum/client-go
-docker-compose stop relayropsten && docker-compose rm -f relayropsten && docker-compose build relayropsten && docker-compose create relayropsten && docker-compose start relayropsten
+		update "$1"
 	;;
 	rinkeby)
-	docker pull ethereum/client-go
-docker-compose stop relayrinkeby && docker-compose rm -f relayrinkeby && docker-compose build relayrinkeby && docker-compose create relayrinkeby && docker-compose start relayrinkeby
+		update "$1"
+	;;
+	goerli)
+		update "$1"
 	;;
 	*)
-	echo "See update.sh for usage (ropsten or rinkeby)"
+	echo "See update.sh for usage (ropsten, rinkeby, goerli)"
 	;;
 esac

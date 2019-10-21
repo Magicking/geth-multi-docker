@@ -5,6 +5,9 @@ gethcmd="/usr/local/bin/geth --datadir "${DATA_DIR}" --cache 4096"
 syncmode=fast
 
 case "${NET}" in
+	"goerli")
+		NET="--goerli"
+		;;
 	"rinkeby")
 		NET="--rinkeby"
 		;;
@@ -37,6 +40,7 @@ modules="eth,web3,net"
 
 exec $gethcmd \
  --syncmode "$syncmode" \
+ --nousb \
  ${NET} \
  --maxpeers 100 \
  ${statsopts} \

@@ -1,37 +1,73 @@
 version: '2'
 services:
-    caddy-proxy:
-        image: abiosoft/caddy
-        #        restart: unless-stopped
-        ports:
-          - 0.0.0.0:8000:80
-        volumes:
-          - ./config/Caddyfile:/etc/Caddyfile
-          - ./config/caddycerts:/root/.caddy
-        logging:
-          driver: "json-file"
-          options:
-            max-size: "1m"
-            max-file: "10"
-    ethstats:
+    ethstatsropsten:
         build: ethstats
         environment:
-          - VIRTUAL_HOST=localhost
+          - VIRTUAL_HOST=ropsten.eth.6120.eu
         env_file:
-          - variables.env
+          - variables-ropsten.env
         logging:
           driver: "json-file"
           options:
             max-size: "1m"
             max-file: "10"
-    relay:
+    relayropsten:
         build: relay
         volumes:
-          - ./data:/data
+          - /data/relayropsten:/data
         env_file:
-          - variables.env
+          - variables-ropsten.env
         ports:
           - 0.0.0.0:30303:30303
+          - 0.0.0.0:8557:8546
+        logging:
+          driver: "json-file"
+          options:
+            max-size: "1m"
+            max-file: "10"
+    ethstatsrinkeby:
+        build: ethstats
+        environment:
+          - VIRTUAL_HOST=rinkeby.eth.6120.eu
+        env_file:
+          - variables-rinkeby.env
+        logging:
+          driver: "json-file"
+          options:
+            max-size: "1m"
+            max-file: "10"
+    relayrinkeby:
+        build: relay
+        environment:
+          - ETHSTATS=ethstatsrinkeby
+        volumes:
+          - /data/relayrinkeby:/data
+        env_file:
+          - variables-rinkeby.env
+        logging:
+          driver: "json-file"
+          options:
+            max-size: "1m"
+            max-file: "10"
+    ethstatsgoerli:
+        build: ethstats
+        environment:
+          - VIRTUAL_HOST=goerli.eth.6120.eu
+        env_file:
+          - variables-goerli.env
+        logging:
+          driver: "json-file"
+          options:
+            max-size: "1m"
+            max-file: "10"
+    relaygoerli:
+        build: relay
+        environment:
+          - ETHSTATS=ethstatsgoerli
+        volumes:
+          - /data/relaygoerli:/data
+        env_file:
+          - variables-goerli.env
         logging:
           driver: "json-file"
           options:
